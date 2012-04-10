@@ -15,33 +15,18 @@ namespace Algorithm
         {
             var AgeDifferenceList = GetAgeDifferenceList();
 
-            if(AgeDifferenceList.Count < 1)
-            {
-                return new AgeDifference();
-            }
+            AgeDifference ageDifferenceResult = new AgeDifference();
 
-            AgeDifference ageDifferenceAnswer = AgeDifferenceList[0];
-            foreach(var ageDifference in AgeDifferenceList)
-            {
-                switch(findType)
-                {
-                    case FindType.MinimumDiff:
-                        if(ageDifference.Difference < ageDifferenceAnswer.Difference)
-                        {
-                            ageDifferenceAnswer = ageDifference;
-                        }
-                        break;
-
-                    case FindType.MaximumDiff:
-                        if (ageDifference.Difference > ageDifferenceAnswer.Difference)
-                        {
-                            ageDifferenceAnswer = ageDifference;
-                        }
-                        break;
+            if (AgeDifferenceList.Count > 0) {
+                if (findType == FindType.MaximumDiff) {
+                    AgeDifferenceList.Reverse();
+                } else {
+                    AgeDifferenceList.Sort(); 
                 }
+                ageDifferenceResult = AgeDifferenceList[0];
             }
 
-            return ageDifferenceAnswer;
+            return ageDifferenceResult;
         }
 
         private List<AgeDifference> GetAgeDifferenceList() {
@@ -49,19 +34,24 @@ namespace Algorithm
 
             for (var i = 0; i < _persons.Count - 1; i++) {
                 for (var j = i + 1; j < _persons.Count; j++) {
-                    var r = new AgeDifference();
-                    if (_persons[i].BirthDate < _persons[j].BirthDate) {
-                        r.Person1 = _persons[i];
-                        r.Person2 = _persons[j];
-                    } else {
-                        r.Person1 = _persons[j];
-                        r.Person2 = _persons[i];
-                    }
-                    r.Difference = r.Person2.BirthDate - r.Person1.BirthDate;
-                    AgeDifferenceList.Add(r);
+                    var normalizedAgeDifference = GetNormalizedAgeDifference(i, j);
+                    AgeDifferenceList.Add(normalizedAgeDifference);
                 }
             }
             return AgeDifferenceList;
+        }
+
+        private AgeDifference GetNormalizedAgeDifference(int i, int j) {
+            var normalizedAgeDifference = new AgeDifference();
+            if (_persons[i].BirthDate < _persons[j].BirthDate) {
+                normalizedAgeDifference.Person1 = _persons[i];
+                normalizedAgeDifference.Person2 = _persons[j];
+            } else {
+                normalizedAgeDifference.Person1 = _persons[j];
+                normalizedAgeDifference.Person2 = _persons[i];
+            }
+            normalizedAgeDifference.Difference = normalizedAgeDifference.Person2.BirthDate - normalizedAgeDifference.Person1.BirthDate;
+            return normalizedAgeDifference;
         }
     }
 }

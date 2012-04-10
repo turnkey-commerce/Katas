@@ -3,5 +3,6 @@
   <assemblies>
     <assembly filename="bin\Debug\Algorithm.Tests.dll" shadow-copy="true" />
     <assembly filename="bin\Debug\Algorithm.dll" shadow-copy="true" />
+    <assembly filename="bin\Debug\Algorithm.Tests.dll" shadow-copy="true" />
   </assemblies>
 </xunit>
