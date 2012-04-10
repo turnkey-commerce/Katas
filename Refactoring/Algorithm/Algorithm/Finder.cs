@@ -4,64 +4,64 @@ namespace Algorithm
 {
     public class Finder
     {
-        private readonly List<Thing> _p;
+        private readonly List<Person> _persons;
 
-        public Finder(List<Thing> p)
+        public Finder(List<Person> persons)
         {
-            _p = p;
+            _persons = persons;
         }
 
-        public F Find(FT ft)
+        public AgeDifference Find(FindType findType)
         {
-            var tr = new List<F>();
+            var AgeDifferenceList = GetAgeDifferenceList();
 
-            for(var i = 0; i < _p.Count - 1; i++)
+            if(AgeDifferenceList.Count < 1)
             {
-                for(var j = i + 1; j < _p.Count; j++)
-                {
-                    var r = new F();
-                    if(_p[i].BirthDate < _p[j].BirthDate)
-                    {
-                        r.P1 = _p[i];
-                        r.P2 = _p[j];
-                    }
-                    else
-                    {
-                        r.P1 = _p[j];
-                        r.P2 = _p[i];
-                    }
-                    r.D = r.P2.BirthDate - r.P1.BirthDate;
-                    tr.Add(r);
-                }
+                return new AgeDifference();
             }
 
-            if(tr.Count < 1)
+            AgeDifference ageDifferenceAnswer = AgeDifferenceList[0];
+            foreach(var ageDifference in AgeDifferenceList)
             {
-                return new F();
-            }
-
-            F answer = tr[0];
-            foreach(var result in tr)
-            {
-                switch(ft)
+                switch(findType)
                 {
-                    case FT.One:
-                        if(result.D < answer.D)
+                    case FindType.MinimumDiff:
+                        if(ageDifference.Difference < ageDifferenceAnswer.Difference)
                         {
-                            answer = result;
+                            ageDifferenceAnswer = ageDifference;
                         }
                         break;
 
-                    case FT.Two:
-                        if(result.D > answer.D)
+                    case FindType.MaximumDiff:
+                        if (ageDifference.Difference > ageDifferenceAnswer.Difference)
                         {
-                            answer = result;
+                            ageDifferenceAnswer = ageDifference;
                         }
                         break;
                 }
             }
 
-            return answer;
+            return ageDifferenceAnswer;
+        }
+
+        private List<AgeDifference> GetAgeDifferenceList() {
+            var AgeDifferenceList = new List<AgeDifference>();
+
+            for (var i = 0; i < _persons.Count - 1; i++) {
+                for (var j = i + 1; j < _persons.Count; j++) {
+                    var r = new AgeDifference();
+                    if (_persons[i].BirthDate < _persons[j].BirthDate) {
+                        r.Person1 = _persons[i];
+                        r.Person2 = _persons[j];
+                    } else {
+                        r.Person1 = _persons[j];
+                        r.Person2 = _persons[i];
+                    }
+                    r.Difference = r.Person2.BirthDate - r.Person1.BirthDate;
+                    AgeDifferenceList.Add(r);
+                }
+            }
+            return AgeDifferenceList;
         }
     }
 }
