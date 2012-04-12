@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Algorithm
 {
@@ -31,14 +32,18 @@ namespace Algorithm
 
         private List<AgeDifference> GetAgeDifferenceList() {
             var AgeDifferenceList = new List<AgeDifference>();
-
-            for (var i = 0; i < _persons.Count - 1; i++) {
-                for (var j = i + 1; j < _persons.Count; j++) {
-                    var normalizedAgeDifference = GetNormalizedAgeDifference(i, j);
-                    AgeDifferenceList.Add(normalizedAgeDifference);
-                }
-            }
-            return AgeDifferenceList;
+            var differences = from p1 in _persons
+                               from p2 in _persons
+                               where p1 != p2
+                               let p = new[] { p1, p2 }.OrderBy(x => x.BirthDate).ToArray()
+                               let pair = new AgeDifference {
+                                   Person1 = p[0],
+                                   Person2 = p[1],
+                                   Difference = p[1].BirthDate - p[0].BirthDate
+                               }
+                               orderby pair.Difference
+                               select pair;
+            return differences.ToList();
         }
 
         private AgeDifference GetNormalizedAgeDifference(int i, int j) {
